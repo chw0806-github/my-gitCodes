@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """Git 常用操作可视化（PyQt5）：切换分支、拉取、提交、推送、创建分支。"""
 
-import locale
 import os
 import subprocess
 import sys
@@ -10,48 +9,35 @@ from typing import List, Optional, Tuple
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from PyQt5.QtWidgets import (
     QApplication,
+    QComboBox,
     QFileDialog,
+    QFormLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
     QMainWindow,
     QMessageBox,
     QPushButton,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
 )
-
-import git_ui
-
-
-def _decode_git_stream(raw: Optional[bytes]) -> str:
-    """解码 Git 子进程输出。Windows 上 Git 可能按系统代码页（如 GBK）写管道，不能假定 UTF-8。"""
-    if not raw:
-        return ""
-    try:
-        return raw.decode("utf-8")
-    except UnicodeDecodeError:
-        pass
-    for enc in ("gbk", "cp936"):
-        try:
-            return raw.decode(enc)
-        except UnicodeDecodeError:
-            continue
-    pref = locale.getpreferredencoding(False)
-    if pref:
-        try:
-            return raw.decode(pref)
-        except (UnicodeDecodeError, LookupError):
-            pass
-    return raw.decode("utf-8", errors="replace")
 
 
 def run_git(repo: str, args: List[str]) -> Tuple[int, str, str]:
     """在 repo 下执行 git 子命令，返回 (returncode, stdout, stderr)。"""
-    # 关闭路径八进制转义，避免中文路径在 status 等输出里变成 \347\256\241 之类“乱码”
-    cmd = ["git", "-C", repo, "-c", "core.quotePath=false"] + args
+    cmd = ["git", "-C", repo] + args
     try:
         proc = subprocess.run(
             cmd,
             capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
             timeout=600,
         )
-        return proc.returncode, _decode_git_stream(proc.stdout), _decode_git_stream(proc.stderr)
+        return proc.returncode, proc.stdout or "", proc.stderr or ""
     except FileNotFoundError:
         return 127, "", "未找到 git 可执行文件，请安装 Git 并加入 PATH。\n"
     except subprocess.TimeoutExpired:
@@ -78,39 +64,98 @@ class GitTaskWorker(QObject):
         self.finished.emit(code, out, err)
 
 
-class MyMainForm(QMainWindow, git_ui.Ui_MainWindow):
+class MainWindow(QMainWindow):
     def __init__(self) -> None:
         super().__init__()
-        self.setupUi(self)
-        self.verticalLayout_root.setStretchFactor(self.output, 1)
-        # git status -sb 行首的 ?? 是「未跟踪」简写，易被误认为乱码
-        self.label_output.setText("git status / 命令输出（行首 ?? 表示未跟踪文件，不是乱码）:")
-        self.label_output.setToolTip(
-            "短状态对照：?? 未跟踪 | M 修改 | A 新增 | D 删除 | R 重命名；"
-            "「?? 备份/」表示文件夹「备份」尚未被 Git 跟踪。"
-        )
+        self.setWindowTitle("Git 可视化操作")
+        self.resize(720, 560)
 
         self._repo = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
-        self.path_edit.setText(self._repo)
         self._thread: Optional[QThread] = None
         self._worker: Optional[GitTaskWorker] = None
 
-        self._busy_buttons: List[QPushButton] = [
-            self.btn_refresh,
-            self.btn_switch,
-            self.btn_create,
-            self.btn_pull,
-            self.btn_push,
-            self.btn_commit,
-        ]
+        central = QWidget()
+        self.setCentralWidget(central)
+        root = QVBoxLayout(central)
 
-        self.btn_browse.clicked.connect(self._pick_repo)
-        self.btn_refresh.clicked.connect(self.refresh_branches)
-        self.btn_switch.clicked.connect(self.switch_branch)
-        self.btn_create.clicked.connect(self.create_branch)
-        self.btn_pull.clicked.connect(self.do_pull)
-        self.btn_push.clicked.connect(self.do_push)
-        self.btn_commit.clicked.connect(self.do_commit)
+        # 仓库路径
+        path_row = QHBoxLayout()
+        self.path_edit = QLineEdit(self._repo)
+        self.path_edit.setReadOnly(True)
+        btn_browse = QPushButton("选择仓库…")
+        btn_browse.clicked.connect(self._pick_repo)
+        path_row.addWidget(QLabel("仓库目录:"))
+        path_row.addWidget(self.path_edit, 1)
+        path_row.addWidget(btn_browse)
+        root.addLayout(path_row)
+
+        # 分支
+        branch_box = QGroupBox("分支")
+        bf = QHBoxLayout(branch_box)
+        self.branch_combo = QComboBox()
+        self.branch_combo.setMinimumWidth(220)
+        btn_refresh = QPushButton("刷新分支")
+        btn_refresh.clicked.connect(self.refresh_branches)
+        btn_switch = QPushButton("切换到所选分支")
+        btn_switch.clicked.connect(self.switch_branch)
+        bf.addWidget(QLabel("本地分支:"))
+        bf.addWidget(self.branch_combo, 1)
+        bf.addWidget(btn_refresh)
+        bf.addWidget(btn_switch)
+        root.addWidget(branch_box)
+
+        # 新建分支
+        new_box = QGroupBox("新建分支")
+        nf = QHBoxLayout(new_box)
+        self.new_branch_edit = QLineEdit()
+        self.new_branch_edit.setPlaceholderText("新分支名称")
+        btn_create = QPushButton("创建并切换")
+        btn_create.clicked.connect(self.create_branch)
+        nf.addWidget(QLabel("名称:"))
+        nf.addWidget(self.new_branch_edit, 1)
+        nf.addWidget(btn_create)
+        root.addWidget(new_box)
+
+        # 远程操作
+        remote_box = QGroupBox("远程")
+        rf = QHBoxLayout(remote_box)
+        btn_pull = QPushButton("拉取 (git pull)")
+        btn_pull.clicked.connect(self.do_pull)
+        btn_push = QPushButton("推送 (git push)")
+        btn_push.clicked.connect(self.do_push)
+        rf.addWidget(btn_pull)
+        rf.addWidget(btn_push)
+        rf.addStretch()
+        root.addWidget(remote_box)
+
+        # 提交
+        commit_box = QGroupBox("提交")
+        cf = QVBoxLayout(commit_box)
+        form = QFormLayout()
+        self.commit_msg = QLineEdit()
+        self.commit_msg.setPlaceholderText("提交说明（将暂存所有变更后提交）")
+        form.addRow("说明:", self.commit_msg)
+        cf.addLayout(form)
+        btn_commit = QPushButton("暂存全部并提交")
+        btn_commit.clicked.connect(self.do_commit)
+        cf.addWidget(btn_commit)
+        root.addWidget(commit_box)
+
+        # 状态与日志
+        root.addWidget(QLabel("git status / 命令输出:"))
+        self.output = QTextEdit()
+        self.output.setReadOnly(True)
+        self.output.setMinimumHeight(200)
+        root.addWidget(self.output, 1)
+
+        self._busy_buttons: List[QPushButton] = [
+            btn_refresh,
+            btn_switch,
+            btn_create,
+            btn_pull,
+            btn_push,
+            btn_commit,
+        ]
 
         self.refresh_branches()
         self._append_status()
@@ -162,6 +207,7 @@ class MyMainForm(QMainWindow, git_ui.Ui_MainWindow):
             return
         names = [ln.strip() for ln in out.splitlines() if ln.strip()]
         self.branch_combo.addItems(names)
+        # 当前分支标星
         ccode, cout, _ = run_git(repo, ["branch", "--show-current"])
         if ccode == 0:
             cur = cout.strip()
@@ -257,7 +303,7 @@ class MyMainForm(QMainWindow, git_ui.Ui_MainWindow):
 def main() -> None:
     app = QApplication(sys.argv)
     app.setStyle("Fusion")
-    w = MyMainForm()
+    w = MainWindow()
     w.show()
     sys.exit(app.exec_())
 
