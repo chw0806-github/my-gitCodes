@@ -40,7 +40,7 @@ git remote add origin https://github.com:chw0806-github/my-gitCodes.git         
 git remote set-url origin https://github.com/chw0806-github/my-gitCodes.git
 git remote set-url origin git@github.com:chw0806-github/my-gitCodes.git
 
-git push -u origin 功能1     第一次推代码到 GitHub 把本地代码传到云端，-u 记住路径
+git push -u origin 功能2     第一次推代码到 GitHub 把本地代码传到云端，-u 记住路径
 
 git clone https://github.com/chw0806-github/my-gitCodes.git
 git clone -b 功能1 git@github.com:chw0806-github/my-gitCodes.git
@@ -63,21 +63,21 @@ git add .
 
 git commit -m '新建exe'
 
-git commit -m "功能1--2"
+git commit -m "功能2--31111"
 
 git log
 
 git log --oneline
 
-git branch 功能1
+git branch 功能2
 
-git checkout 功能1
+git checkout 功能2
 
 git checkout master
 
 
 
-
+git remote remove origin           你现在只需要复制这一行，立刻解决所有报错！
 
 
 
@@ -85,6 +85,8 @@ git checkout master
 ssh-keygen -t ed25519 -C "515217862@qq.com"
 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMKgjyVEtnLKedVQsJbQtR/8MitYJA/v4Y2+PjY/sOQl 515217862@qq.com
 
+$ cat ~/.ssh/id_ed25519.pub
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHbMuYC11h7LP8LhqBdtuYk1XCvRtg36E185rmRL2C/n A0002285@JS-GY-2285T
 
 
 我有测试程序源码管理的需求，用git管理。
@@ -94,7 +96,17 @@ ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMKgjyVEtnLKedVQsJbQtR/8MitYJA/v4Y2+PjY/sOQl
 
 
 git reset --hard 1fb698f      1fb698f     e58bb9c
-切换了之后，代码也会变成新的1111
+切换了之后，代码也会变成新的
+
+
+如果你是从零第一次用 Git，还需要先在仓库里配置用户名邮箱（git config user.name / user.email），或在全局配置一次；这和本程序无关，是在终端或 Git 设置里完成。需要的话可以说明你当前卡在哪一步（例如推送报错），我可以按报错帮你对一下。11111111
+
+
+
+
+
+
+
 
 
 
