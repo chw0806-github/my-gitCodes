@@ -90,6 +90,7 @@ class MyMainForm(QMainWindow, git_ui.Ui_MainWindow):
         super().__init__()
         self.setupUi(self)
         self.verticalLayout_root.setStretchFactor(self.output, 1)
+        self.verticalLayout_root.setStretchFactor(self.text_log, 1)
         self.label_output.setText("git status / 命令输出（行首 ?? 表示未跟踪文件，不是乱码）:")
         self.label_output.setToolTip(
             "短状态对照：?? 未跟踪 | M 修改 | A 新增 | D 删除 | R 重命名；"
@@ -117,12 +118,48 @@ class MyMainForm(QMainWindow, git_ui.Ui_MainWindow):
         self.btn_pull.clicked.connect(self.do_pull)
         self.btn_push.clicked.connect(self.do_push)
         self.btn_commit.clicked.connect(self.do_commit)
+        self.btn_refresh_head_log.clicked.connect(self.refresh_head_and_log)
 
         self.refresh_branches()
         self._append_status()
+        self.refresh_head_and_log()
 
     def _repo_path(self) -> str:
         return self.path_edit.text().strip() or self._repo
+
+    def refresh_head_and_log(self) -> None:
+        """刷新当前 HEAD 信息与最近提交列表。"""
+        repo = self._repo_path()
+        if not is_git_repo(repo):
+            self.text_head.setPlainText("")
+            self.text_log.setPlainText("")
+            return
+
+        bcode, branch_out, _ = run_git(repo, ["branch", "--show-current"])
+        br = branch_out.strip()
+        if bcode == 0 and br:
+            branch_line = br
+        else:
+            branch_line = "（分离 HEAD 或无当前分支名）"
+
+        # 当前提交：短哈希、说明、作者、时间、完整哈希
+        pretty = "%h · %s%n作者: %an <%ae>%n时间: %ci%n完整哈希: %H"
+        code, out, err = run_git(repo, ["log", "-1", f"--pretty=format:{pretty}"])
+        if code != 0:
+            msg = f"分支: {branch_line}\n\n（尚无提交或无法读取 HEAD）"
+            if err.strip():
+                msg += "\n" + err.strip()
+            self.text_head.setPlainText(msg)
+        else:
+            self.text_head.setPlainText(f"分支: {branch_line}\n\n{out.strip()}")
+
+        code2, out2, err2 = run_git(repo, ["log", "-n", "30", "--oneline", "--decorate"])
+        if code2 != 0:
+            self.text_log.setPlainText(
+                err2.strip() if err2.strip() else "（暂无提交记录）"
+            )
+        else:
+            self.text_log.setPlainText(out2.strip())
 
     def _append_log(self, title: str, code: int, out: str, err: str) -> None:
         block = f"=== {title} (exit {code}) ===\n"
@@ -179,6 +216,7 @@ class MyMainForm(QMainWindow, git_ui.Ui_MainWindow):
         self.refresh_branches()
         self.output.clear()
         self._append_status()
+        self.refresh_head_and_log()
 
     def refresh_branches(self) -> None:
         repo = self._repo_path()
@@ -210,6 +248,7 @@ class MyMainForm(QMainWindow, git_ui.Ui_MainWindow):
         if code == 0:
             self.refresh_branches()
             self._append_status()
+            self.refresh_head_and_log()
 
     def create_branch(self) -> None:
         repo = self._repo_path()
@@ -223,6 +262,7 @@ class MyMainForm(QMainWindow, git_ui.Ui_MainWindow):
             self.new_branch_edit.clear()
             self.refresh_branches()
             self._append_status()
+            self.refresh_head_and_log()
 
     def do_commit(self) -> None:
         repo = self._repo_path()
@@ -249,6 +289,7 @@ class MyMainForm(QMainWindow, git_ui.Ui_MainWindow):
         if code2 == 0:
             self.commit_msg.clear()
         self._append_status()
+        self.refresh_head_and_log()
 
     def _set_busy(self, busy: bool) -> None:
         for b in self._busy_buttons:
@@ -277,6 +318,7 @@ class MyMainForm(QMainWindow, git_ui.Ui_MainWindow):
                 self.refresh_branches()
             # 拉取无论成功与否都可能留下冲突（例如 fetch 成功 merge 失败）
             self._append_status(conflict_popup=is_pull)
+            self.refresh_head_and_log()
 
         def on_thread_finished() -> None:
             self._thread = None
