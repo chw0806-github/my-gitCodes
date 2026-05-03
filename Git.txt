@@ -1,0 +1,100 @@
+git config --global user.name "名字" 设置全局用户名 让 Git 知道 “谁在改代码”
+
+git config --global user.email "邮箱" 设置全局邮箱 绑定 GitHub，避免推送报错
+
+git init 初始化本地仓库 把普通文件夹变成 Git 能管理的仓库
+
+git status
+
+git add 文件名 把文件加入暂存区 先 “选好要提交的文件”，再结账
+
+git add . 加入所有修改 / 未跟踪文件 懒人版，批量加文件
+
+git commit -m "提交信息" 提交暂存区文件到本地仓库 给代码 “拍快照”，记录修改
+
+git log 查看详细提交记录 回顾自己改了啥、啥时候改的
+
+git log --oneline 查看精简提交记录 快速看所有提交，不占屏幕
+
+git reset --hard e58bb9c           回退过去版本
+
+git branch                      # 看你自己在哪
+
+git branch [分支名]           复制成分支 # 新建分支
+
+git checkout [分支名]         # 切换分支
+
+git checkout master             # 切回主分支
+
+git merge login             # 合并分支，把login的内容合并过去。
+
+git branch -d 功能2        删除 login 分支
+
+
+github:
+git config --global user.name "chw0806-github"
+
+git config --global user.email "515217862@qq.com"
+
+git remote add origin https://github.com:chw0806-github/my-gitCodes.git          仓库地址 关联远程仓库 告诉本地 Git：代码要传到哪个 GitHub 仓库
+git remote set-url origin https://github.com/chw0806-github/my-gitCodes.git
+git remote set-url origin git@github.com:chw0806-github/my-gitCodes.git
+
+git push -u origin 功能1     第一次推代码到 GitHub 把本地代码传到云端，-u 记住路径
+
+git clone https://github.com/chw0806-github/my-gitCodes.git
+git clone -b 功能1 git@github.com:chw0806-github/my-gitCodes.git
+
+git restore --staged .
+想要一次性撤销所有 add 的文件：
+————————————————————————————————————————————
+
+
+
+git config --global user.name "caihongwen"
+
+git config --global user.email "515217862@qq.com"
+
+git status
+
+git add 'note.txt'
+
+git add . 
+
+git commit -m '新建exe'
+
+git commit -m "功能1--2"
+
+git log
+
+git log --oneline
+
+git branch 功能1
+
+git checkout 功能1
+
+git checkout master
+
+
+
+
+
+
+
+
+ssh-keygen -t ed25519 -C "515217862@qq.com"
+ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMKgjyVEtnLKedVQsJbQtR/8MitYJA/v4Y2+PjY/sOQl 515217862@qq.com
+
+
+
+我有测试程序源码管理的需求，用git管理。
+已知，我有一个master的代码，但是我有很多型号，都是基于这个master的代码来的，然后我每个型号的代码，都是定期需要升级的，
+如何管理呢
+
+
+
+git reset --hard 1fb698f      1fb698f     e58bb9c
+切换了之后，代码也会变成新的
+
+
+
