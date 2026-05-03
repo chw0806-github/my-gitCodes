@@ -1,0 +1,208 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>720</width>
+    <height>560</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Git 可视化操作</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QVBoxLayout" name="verticalLayout_root">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_repo">
+      <item>
+       <widget class="QLabel" name="label_repo">
+        <property name="text">
+         <string>仓库目录:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="path_edit">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="btn_browse">
+        <property name="text">
+         <string>选择仓库…</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="group_branch">
+      <property name="title">
+       <string>分支</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_branch">
+       <item>
+        <widget class="QLabel" name="label_branch">
+         <property name="text">
+          <string>本地分支:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QComboBox" name="branch_combo">
+         <property name="minimumSize">
+          <size>
+           <width>220</width>
+           <height>0</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_refresh">
+         <property name="text">
+          <string>刷新分支</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_switch">
+         <property name="text">
+          <string>切换到所选分支</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="group_new_branch">
+      <property name="title">
+       <string>新建分支</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_new">
+       <item>
+        <widget class="QLabel" name="label_new_name">
+         <property name="text">
+          <string>名称:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLineEdit" name="new_branch_edit">
+         <property name="placeholderText">
+          <string>新分支名称</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_create">
+         <property name="text">
+          <string>创建并切换</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="group_remote">
+      <property name="title">
+       <string>远程</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_remote">
+       <item>
+        <widget class="QPushButton" name="btn_pull">
+         <property name="text">
+          <string>拉取 (git pull)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_push">
+         <property name="text">
+          <string>推送 (git push)</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_remote">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="group_commit">
+      <property name="title">
+       <string>提交</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_commit">
+       <item>
+        <layout class="QFormLayout" name="formLayout_commit">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_commit_msg">
+           <property name="text">
+            <string>说明:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="commit_msg">
+           <property name="placeholderText">
+            <string>提交说明（将暂存所有变更后提交）</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_commit">
+         <property name="text">
+          <string>暂存全部并提交</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QLabel" name="label_output">
+      <property name="text">
+       <string>git status / 命令输出:</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QTextEdit" name="output">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>200</height>
+       </size>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
