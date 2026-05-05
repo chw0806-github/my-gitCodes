@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>720</width>
-    <height>680</height>
+    <height>820</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,6 +16,16 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_root">
     <item>
+     <widget class="QTabWidget" name="main_tabs">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="tab_operations">
+       <attribute name="title">
+        <string>仓库操作</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_tab1">
+        <item>
      <layout class="QHBoxLayout" name="horizontalLayout_repo">
       <item>
        <widget class="QLabel" name="label_repo">
@@ -41,6 +51,42 @@
      </layout>
     </item>
     <item>
+     <widget class="QGroupBox" name="group_clone_init">
+      <property name="title">
+       <string>克隆 / 初始化</string>
+      </property>
+      <layout class="QHBoxLayout" name="horizontalLayout_clone_init">
+       <item>
+        <widget class="QPushButton" name="btn_clone">
+         <property name="text">
+          <string>克隆仓库…</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_init">
+         <property name="text">
+          <string>在此目录初始化 git…</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_clone_init">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
      <widget class="QGroupBox" name="group_branch">
       <property name="title">
        <string>分支</string>
@@ -49,7 +95,7 @@
        <item>
         <widget class="QLabel" name="label_branch">
          <property name="text">
-          <string>本地分支:</string>
+          <string>分支（本地 / 远程）:</string>
          </property>
         </widget>
        </item>
@@ -115,33 +161,137 @@
       <property name="title">
        <string>远程</string>
       </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_remote">
+      <layout class="QVBoxLayout" name="verticalLayout_remote">
        <item>
-        <widget class="QPushButton" name="btn_pull">
-         <property name="text">
-          <string>拉取 (git pull)</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_remote">
+         <item>
+          <widget class="QPushButton" name="btn_fetch">
+           <property name="text">
+            <string>获取 (git fetch --prune)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_pull">
+           <property name="text">
+            <string>拉取 (git pull)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_push">
+           <property name="text">
+            <string>推送 (git push)</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="horizontalSpacer_remote">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_push">
-         <property name="text">
-          <string>推送 (git push)</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_remote_tools">
+         <item>
+          <widget class="QLabel" name="label_remote_urls">
+           <property name="text">
+            <string>远端地址 (git remote -v):</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_refresh_remote_list">
+           <property name="text">
+            <string>刷新列表</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_remote_add">
+           <property name="text">
+            <string>添加远端</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_remote_set_url">
+           <property name="text">
+            <string>修改 fetch URL</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
        <item>
-        <spacer name="horizontalSpacer_remote">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
+        <widget class="QTextEdit" name="text_remote_urls">
+         <property name="readOnly">
+          <bool>true</bool>
          </property>
-         <property name="sizeHint" stdset="0">
+         <property name="maximumSize">
           <size>
-           <width>40</width>
-           <height>20</height>
+           <width>16777215</width>
+           <height>96</height>
           </size>
          </property>
-        </spacer>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
+     <widget class="QGroupBox" name="group_identity">
+      <property name="title">
+       <string>提交身份（仅本仓库）</string>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_identity">
+       <item>
+        <layout class="QFormLayout" name="formLayout_identity">
+         <item row="0" column="0">
+          <widget class="QLabel" name="label_git_user_name">
+           <property name="text">
+            <string>user.name:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="edit_git_user_name">
+           <property name="placeholderText">
+            <string>例如：Zhang San</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLabel" name="label_git_user_email">
+           <property name="text">
+            <string>user.email:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLineEdit" name="edit_git_user_email">
+           <property name="placeholderText">
+            <string>例如：you@example.com</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_save_identity">
+         <property name="text">
+          <string>保存到本仓库配置</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </widget>
@@ -164,113 +314,189 @@
          <item row="0" column="1">
           <widget class="QLineEdit" name="commit_msg">
            <property name="placeholderText">
-            <string>提交说明（将暂存所有变更后提交）</string>
+            <string>提交说明（用于「全部提交」）</string>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <widget class="QPushButton" name="btn_commit">
-         <property name="text">
-          <string>暂存全部并提交</string>
-         </property>
-        </widget>
+        <layout class="QHBoxLayout" name="horizontalLayout_commit_btns">
+         <item>
+          <widget class="QPushButton" name="btn_stage_all">
+           <property name="text">
+            <string>暂存全部</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_commit_all">
+           <property name="text">
+            <string>全部提交</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_commit_undo">
+         <item>
+          <widget class="QPushButton" name="btn_restore_staged">
+           <property name="text">
+            <string>撤销暂存</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="btn_reset_soft_parent">
+           <property name="text">
+            <string>撤销上次提交</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </item>
       </layout>
      </widget>
     </item>
     <item>
-     <widget class="QGroupBox" name="group_head_log">
+     <widget class="QGroupBox" name="group_history">
       <property name="title">
-       <string>日志与当前提交</string>
+       <string>检出 git checkout</string>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_head_log">
+      <layout class="QHBoxLayout" name="horizontalLayout_history">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_head_btns">
-         <item>
-          <widget class="QLabel" name="label_head_hint">
-           <property name="text">
-            <string>当前 HEAD</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <spacer name="horizontalSpacer_head">
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>40</width>
-             <height>20</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btn_refresh_head_log">
-           <property name="text">
-            <string>刷新日志</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item>
-        <widget class="QTextEdit" name="text_head">
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>130</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_recent_log">
+        <widget class="QLabel" name="label_history_ref">
          <property name="text">
-          <string>最近提交（最多 30 条）</string>
+          <string>提交或分支:</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QTextEdit" name="text_log">
-         <property name="readOnly">
-          <bool>true</bool>
-         </property>
+        <widget class="QLineEdit" name="history_ref_edit">
          <property name="minimumSize">
           <size>
-           <width>0</width>
-           <height>120</height>
+           <width>200</width>
+           <height>0</height>
           </size>
+         </property>
+         <property name="placeholderText">
+          <string>例如 def5678 或分支名</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="btn_history_checkout">
+         <property name="text">
+          <string>检出</string>
          </property>
         </widget>
        </item>
       </layout>
      </widget>
     </item>
-    <item>
-     <widget class="QLabel" name="label_output">
-      <property name="text">
-       <string>git status / 命令输出:</string>
-      </property>
-     </widget>
-    </item>
-    <item>
-     <widget class="QTextEdit" name="output">
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>200</height>
-       </size>
-      </property>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_log">
+       <attribute name="title">
+        <string>日志与输出</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_tab2">
+        <item>
+         <widget class="QGroupBox" name="group_head_log">
+          <property name="title">
+           <string>日志与当前提交</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_head_log">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_head_btns">
+             <item>
+              <widget class="QLabel" name="label_head_hint">
+               <property name="text">
+                <string>当前 HEAD</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <spacer name="horizontalSpacer_head">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QPushButton" name="btn_refresh_head_log">
+               <property name="text">
+                <string>刷新日志</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="text_head">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>130</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_recent_log">
+             <property name="text">
+              <string>最近提交（最多 30 条）</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QTextEdit" name="text_log">
+             <property name="readOnly">
+              <bool>true</bool>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>120</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_output">
+          <property name="text">
+           <string>git status / 命令输出:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QTextEdit" name="output">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>200</height>
+           </size>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>

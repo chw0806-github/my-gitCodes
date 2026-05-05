@@ -39,6 +39,7 @@ git config --global user.email "515217862@qq.com"
 git remote add origin https://github.com:chw0806-github/my-gitCodes.git          仓库地址 关联远程仓库 告诉本地 Git：代码要传到哪个 GitHub 仓库
 git remote set-url origin https://github.com/chw0806-github/my-gitCodes.git
 git remote set-url origin git@github.com:chw0806-github/my-gitCodes.git
+git remote add origin https://github.com/chw0806-github/my-gitCodes.git
 
 git push -u origin 功能1     第一次推代码到 GitHub 把本地代码传到云端，-u 记住路径
 
@@ -71,14 +72,20 @@ git log --oneline
 
 git branch 功能1
 
-git checkout 功能1
+git checkout 功能3
 
 git checkout master
 
+git stash --include-untracked
 
 
+✅ 马上就能看到 GitHub 上的所有分支！
+git fetch
+git branch -a
 
 
+git pull origin 功能3    # 拉代码
+git push origin 分支名    # 推代码
 
 
 
@@ -98,3 +105,61 @@ git reset --hard 1fb698f      1fb698f     e58bb9c
 
 1111111111122222
 天天吞吞吐吐111
+
+
+
+
+————————————————————————————————
+# 1. 关联你的 GitHub 仓库（只需要做一次）
+git remote add origin https://github.com/chw0806-github/my-gitCodes.git
+
+# 2. 拉取 GitHub 上所有分支、所有历史版本（关键！）
+git fetch
+
+# 3. 查看所有分支（本地 + GitHub 全部显示）
+git branch -a
+
+# 4. 切换到 功能2
+git checkout 功能3
+
+# 5. 查看当前状态
+git status
+
+执行完你会得到：
+✅ 本地 成功连接 GitHub✅ 能看到 功能 1、功能 2、功能 3、功能 4、master✅ 成功进入 功能 2 分支✅ 代码 和 GitHub 完全一致
+如果中途还报 Git.txt 错误，就用这一行：
+
+git stash --include-untracked
+然后再切分支：
+
+git checkout 功能2
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
